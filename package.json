@@ -1,0 +1,17 @@
+{
+  "name": "ditz-fx",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DiTz FX paper-trading forex terminal with real market data via Twelve Data.",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "vercel": "latest"
+  },
+  "type": "module"
+}

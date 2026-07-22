@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07110f" />
+  <meta name="description" content="DiTz FX — platform paper trading forex dengan data pasar asli." />
+  <title>DiTz FX — Forex Trading Terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <div id="toastStack" class="toast-stack" aria-live="polite"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="DiTz FX home">
+      <span class="brand-mark">D</span>
+      <span><strong>DiTz</strong><em>FX</em></span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navigasi utama">
+      <button class="nav-item active" data-view="trade">Trade</button>
+      <button class="nav-item" data-view="portfolio">Portfolio</button>
+      <button class="nav-item" data-view="leaderboard">Leaderboard</button>
+    </nav>
+
+    <div class="top-actions">
+      <div class="connection-pill" id="connectionPill">
+        <span class="status-dot"></span>
+        <span id="connectionText">Menghubungkan</span>
+      </div>
+      <button class="icon-btn" id="notificationBtn" aria-label="Notifikasi">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      </button>
+      <button class="avatar-btn" id="accountBtn" aria-label="Akun">RS</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="sidebar">
+      <section class="watchlist-card">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">MARKET</span>
+            <h2>Watchlist</h2>
+          </div>
+          <button class="icon-btn small" id="refreshBtn" aria-label="Refresh harga">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0-15.5-3M4 4v4h4M4 13a8.1 8.1 0 0 0 15.5 3M20 20v-4h-4"/></svg>
+          </button>
+        </div>
+        <label class="search-box">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="pairSearch" type="search" placeholder="Cari pair forex" autocomplete="off" />
+        </label>
+        <div class="watchlist-columns"><span>Pair</span><span>Harga</span><span>24h</span></div>
+        <div id="watchlist" class="watchlist"></div>
+      </section>
+
+      <section class="account-card glow-card">
+        <div class="account-card-top">
+          <div>
+            <span class="eyebrow">PAPER ACCOUNT</span>
+            <h3>DiTz Challenge</h3>
+          </div>
+          <span class="demo-badge">DEMO</span>
+        </div>
+        <div class="balance-row">
+          <span>Balance</span><strong id="balanceValue">$10,000.00</strong>
+        </div>
+        <div class="account-grid">
+          <div><span>Equity</span><strong id="equityValue">$10,000.00</strong></div>
+          <div><span>Free margin</span><strong id="freeMarginValue">$10,000.00</strong></div>
+          <div><span>Margin</span><strong id="marginValue">$0.00</strong></div>
+          <div><span>Floating P/L</span><strong id="floatingValue">$0.00</strong></div>
+        </div>
+        <div class="progress-line"><span id="challengeProgress"></span></div>
+        <div class="challenge-meta"><span>Target +10%</span><strong id="challengeText">0%</strong></div>
+      </section>
+    </aside>
+
+    <section class="workspace">
+      <div id="tradeView" class="view active">
+        <section class="instrument-header">
+          <div class="instrument-title">
+            <div class="pair-icon" id="pairIcon">EU</div>
+            <div>
+              <div class="title-row">
+                <h1 id="pairTitle">EUR/USD</h1>
+                <span class="market-badge">FOREX</span>
+                <span class="live-badge" id="liveBadge"><i></i> LIVE</span>
+              </div>
+              <p id="pairName">Euro / US Dollar</p>
+            </div>
+          </div>
+          <div class="quote-strip">
+            <div><span>Bid</span><strong id="bidValue">—</strong></div>
+            <div><span>Ask</span><strong id="askValue">—</strong></div>
+            <div><span>Spread</span><strong id="spreadValue">—</strong></div>
+            <div><span>24h change</span><strong id="changeValue">—</strong></div>
+            <div><span>Market time</span><strong id="marketTime">—</strong></div>
+          </div>
+        </section>
+
+        <section class="trade-grid">
+          <article class="chart-card panel">
+            <div class="chart-toolbar">
+              <div class="intervals" id="intervalButtons">
+                <button data-interval="1min">1m</button>
+                <button data-interval="5min" class="active">5m</button>
+                <button data-interval="15min">15m</button>
+                <button data-interval="1h">1H</button>
+                <button data-interval="4h">4H</button>
+                <button data-interval="1day">1D</button>
+              </div>
+              <div class="chart-actions">
+                <button class="tool-btn active" id="candleBtn" title="Candlestick">Candles</button>
+                <button class="tool-btn" id="lineBtn" title="Line chart">Line</button>
+                <button class="icon-btn small" id="fullscreenBtn" title="Fullscreen">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="ohlc-bar" id="ohlcBar"><span>O —</span><span>H —</span><span>L —</span><span>C —</span></div>
+            <div class="chart-wrap" id="chartWrap">
+              <canvas id="marketChart" aria-label="Chart harga forex"></canvas>
+              <div class="chart-crosshair" id="chartCrosshair"></div>
+              <div class="chart-loading" id="chartLoading">
+                <span class="spinner"></span>
+                <p>Memuat data pasar asli…</p>
+              </div>
+              <div class="chart-empty hidden" id="chartEmpty">
+                <strong>Data belum tersedia</strong>
+                <span>Tambahkan <code>TWELVE_DATA_API_KEY</code> di Environment Variables Vercel.</span>
+              </div>
+            </div>
+            <div class="chart-footer">
+              <span id="chartStatus">Menunggu data…</span>
+              <span>UTC · delayed sesuai paket data</span>
+            </div>
+          </article>
+
+          <aside class="order-panel panel">
+            <div class="panel-tabs" id="orderTypeTabs">
+              <button class="active" data-order-type="market">Market</button>
+              <button data-order-type="limit">Limit</button>
+            </div>
+
+            <div class="buy-sell-toggle" id="sideToggle">
+              <button class="buy active" data-side="buy"><span>BUY</span><strong id="buyPrice">—</strong></button>
+              <button class="sell" data-side="sell"><span>SELL</span><strong id="sellPrice">—</strong></button>
+            </div>
+
+            <form id="orderForm" novalidate>
+              <label class="field">
+                <span>Volume (lot)</span>
+                <div class="number-field"><input id="lotInput" type="number" min="0.01" max="100" step="0.01" value="0.10" /><em>LOT</em></div>
+              </label>
+              <label class="field hidden" id="limitPriceField">
+                <span>Limit price</span>
+                <div class="number-field"><input id="limitPriceInput" type="number" step="0.00001" /><em>PRICE</em></div>
+              </label>
+              <div class="field-grid">
+                <label class="field"><span>Stop loss</span><div class="number-field"><input id="slInput" type="number" step="0.00001" placeholder="Opsional" /></div></label>
+                <label class="field"><span>Take profit</span><div class="number-field"><input id="tpInput" type="number" step="0.00001" placeholder="Opsional" /></div></label>
+              </div>
+              <div class="risk-presets" id="riskPresets">
+                <button type="button" data-risk="0.5">0.5%</button>
+                <button type="button" data-risk="1" class="active">1%</button>
+                <button type="button" data-risk="2">2%</button>
+                <button type="button" data-risk="3">3%</button>
+              </div>
+              <div class="order-summary">
+                <div><span>Est. margin</span><strong id="estimatedMargin">$100.00</strong></div>
+                <div><span>Nilai pip</span><strong id="pipValue">$1.00</strong></div>
+                <div><span>Leverage</span><strong>1:100</strong></div>
+              </div>
+              <button class="place-order buy" id="placeOrderBtn" type="submit">Place Buy Order</button>
+              <p class="risk-note">Paper trading saja. Tidak ada dana asli yang diproses.</p>
+            </form>
+          </aside>
+        </section>
+
+        <section class="bottom-grid">
+          <article class="positions-card panel">
+            <div class="panel-heading">
+              <div class="panel-tabs compact" id="positionTabs">
+                <button class="active" data-table="positions">Positions <span id="positionCount">0</span></button>
+                <button data-table="pending">Pending <span id="pendingCount">0</span></button>
+                <button data-table="history">History</button>
+              </div>
+              <button class="text-btn danger" id="closeAllBtn">Close all</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead id="tradeTableHead"></thead>
+                <tbody id="tradeTableBody"></tbody>
+              </table>
+              <div class="table-empty" id="tableEmpty"><span>Belum ada posisi</span><small>Order baru akan muncul di sini.</small></div>
+            </div>
+          </article>
+
+          <article class="depth-card panel">
+            <div class="panel-heading">
+              <div><span class="eyebrow">MARKET DEPTH</span><h3>Indicative depth</h3></div>
+              <span class="info-tag" title="Forex OTC tidak memiliki satu order book pusat.">Bukan L2 bursa</span>
+            </div>
+            <div class="depth-head"><span>Price</span><span>Size</span><span>Total</span></div>
+            <div id="askDepth" class="depth-list asks"></div>
+            <div class="mid-price"><strong id="depthMid">—</strong><span id="depthSpread">Spread —</span></div>
+            <div id="bidDepth" class="depth-list bids"></div>
+          </article>
+        </section>
+      </div>
+
+      <div id="portfolioView" class="view">
+        <section class="page-heading"><div><span class="eyebrow">PERFORMANCE</span><h1>Portfolio analytics</h1><p>Ringkasan performa paper trading tersimpan di perangkat ini.</p></div><button class="secondary-btn" id="resetAccountBtn">Reset demo account</button></section>
+        <section class="stats-grid">
+          <article class="stat-card"><span>Net P/L</span><strong id="netPnlStat">$0.00</strong><small>Sejak akun dibuat</small></article>
+          <article class="stat-card"><span>Win rate</span><strong id="winRateStat">0%</strong><small id="winsStat">0 menang / 0 kalah</small></article>
+          <article class="stat-card"><span>Total trades</span><strong id="totalTradesStat">0</strong><small>Posisi yang sudah ditutup</small></article>
+          <article class="stat-card"><span>Best trade</span><strong id="bestTradeStat">$0.00</strong><small>Profit terbesar</small></article>
+        </section>
+        <section class="portfolio-layout">
+          <article class="panel performance-panel"><div class="panel-heading"><div><span class="eyebrow">EQUITY CURVE</span><h3>Account growth</h3></div></div><div class="performance-chart"><canvas id="equityChart"></canvas></div></article>
+          <article class="panel risk-panel"><div class="panel-heading"><div><span class="eyebrow">RISK SCORE</span><h3>Discipline meter</h3></div></div><div class="risk-ring" id="riskRing"><div><strong id="riskScore">100</strong><span>/100</span></div></div><ul class="risk-checks" id="riskChecks"></ul></article>
+        </section>
+      </div>
+
+      <div id="leaderboardView" class="view">
+        <section class="page-heading"><div><span class="eyebrow">SEASON 01</span><h1>DiTz FX Leaderboard</h1><p>Peringkat komunitas demo berdasarkan return paper trading.</p></div><div class="season-timer"><span>Season ends</span><strong id="seasonTimer">39d 12h</strong></div></section>
+        <section class="podium" id="podium"></section>
+        <section class="panel leaderboard-panel">
+          <div class="leaderboard-head"><span>Rank</span><span>Trader</span><span>Return</span><span>Win rate</span><span>Trades</span><span>Score</span></div>
+          <div id="leaderboardRows"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="accountModal">
+    <section class="modal">
+      <button class="modal-close" data-close-modal>&times;</button>
+      <span class="eyebrow">ACCOUNT</span>
+      <h2>Paper trading profile</h2>
+      <div class="profile-card"><div class="profile-avatar">RS</div><div><strong>Radit Sunandar</strong><span>@ditztrader · Indonesia</span></div></div>
+      <div class="modal-stats"><div><span>Mode</span><strong>Paper</strong></div><div><span>Currency</span><strong>USD</strong></div><div><span>Leverage</span><strong>1:100</strong></div></div>
+      <p class="modal-note">Akun ini hanya simulasi eksekusi menggunakan harga pasar asli. Tidak terhubung ke broker atau dana nyata.</p>
+    </section>
+  </div>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
